@@ -45,7 +45,6 @@ const Menu = () => {
   const handleSearchClick = () => {
     debouncedSearchHandler(debouncedSearch);
   };
-
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       debouncedSearchHandler(debouncedSearch);
