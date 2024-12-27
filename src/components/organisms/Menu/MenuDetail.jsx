@@ -38,6 +38,7 @@ const MenuDetail = () => {
     if (product?.detailedImages?.length > 0) {
       setSelectedImage(product.detailedImages[0]); // Set default image to the first image in the list
     }
+    fetchProduct();
   }, [product]);
 
   useEffect(() => {
