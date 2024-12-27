@@ -1,8 +1,4 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
-
-import Input from '@/components/atoms/Input';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -10,10 +6,25 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import React, { useState } from 'react';
+
+import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useProducts } from '@/hooks/ProductHook';
 import { useToast } from '@/hooks/use-toast';
+import Input from '@/components/atoms/Input';
+
+const categories = [
+  'Dairy Products',
+  'Sauce',
+  'Gravy',
+  'Dal',
+  'Snacks',
+  'Starter',
+  'Tava Special',
+  'Spices And Masala',
+];
 
 const CreateProduct = () => {
   const { create } = useProducts();
@@ -22,24 +33,37 @@ const CreateProduct = () => {
     stockQuantity: 0,
     stockUnit: '',
     packetQuantity: 0,
+    soldPackets: 0,
     packetUnit: '',
     packetPrice: 0,
     boxQuantity: 0,
-    boxUnit: '',
     category: '',
     description: '',
     thumbnail: null,
     detailedImages: [],
+    packagingType: '',
+    friesType: '',
+    feature: '',
+    selfLife: '',
+    storageMethod: '',
+    temprature: '',
+    usageApplication: '',
+    refrigerationRequired: false,
+    countryOfOrigin: '',
+    application: '',
+    frozenTemprature: '',
+    ingrediants: '',
+    form: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setProductData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -56,20 +80,13 @@ const CreateProduct = () => {
     setIsSubmitting(true);
 
     const formData = new FormData();
-    formData.append('name', productData.name);
-    formData.append('stockQuantity', productData.stockQuantity);
-    formData.append('stockUnit', productData.stockUnit);
-    formData.append('packetQuantity', productData.packetQuantity);
-    formData.append('packetUnit', productData.packetUnit);
-    formData.append('packetPrice', productData.packetPrice);
-    formData.append('boxQuantity', productData.boxQuantity);
-    formData.append('boxUnit', productData.boxUnit);
-    formData.append('category', productData.category);
-    formData.append('description', productData.description);
-    formData.append('thumbnail', productData.thumbnail);
-    productData.detailedImages.forEach((image) =>
-      formData.append('detailedImages', image)
-    );
+    Object.entries(productData).forEach(([key, value]) => {
+      if (key === 'detailedImages') {
+        value.forEach((image) => formData.append(key, image));
+      } else {
+        formData.append(key, value);
+      }
+    });
 
     try {
       await create(formData); // API call to create the product
@@ -84,14 +101,27 @@ const CreateProduct = () => {
         stockQuantity: 0,
         stockUnit: '',
         packetQuantity: 0,
+        soldPackets: 0,
         packetUnit: '',
         packetPrice: 0,
         boxQuantity: 0,
-        boxUnit: '',
         category: '',
         description: '',
         thumbnail: null,
         detailedImages: [],
+        packagingType: '',
+        friesType: '',
+        feature: '',
+        selfLife: '',
+        storageMethod: '',
+        temprature: '',
+        usageApplication: '',
+        refrigerationRequired: false,
+        countryOfOrigin: '',
+        application: '',
+        frozenTemprature: '',
+        ingrediants: '',
+        form: '',
       });
     } catch (error) {
       toast({
@@ -105,159 +135,136 @@ const CreateProduct = () => {
   };
 
   return (
-    <Card className="w-full  mx-auto mt-8">
+    <Card className='w-full mx-auto mt-8'>
       <CardHeader>
         <CardTitle>Create Product</CardTitle>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <Label htmlFor="name">Product Name</Label>
-              <Input
-                id="name"
-                name="name"
-                placeholder="Enter product name"
-                value={productData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="stockQuantity">Stock Quantity</Label>
-              <Input
-                id="stockQuantity"
-                name="stockQuantity"
-                type="number"
-                placeholder="Enter stock quantity"
-                value={productData.stockQuantity}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="stockUnit">Stock Unit</Label>
-              <Input
-                id="stockUnit"
-                name="stockUnit"
-                placeholder="Enter stock unit (e.g., kg, piece)"
-                value={productData.stockUnit}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="packetQuantity">Packet Quantity</Label>
-              <Input
-                id="packetQuantity"
-                name="packetQuantity"
-                type="number"
-                placeholder="Enter packet quantity"
-                value={productData.packetQuantity}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="packetUnit">Packet Unit</Label>
-              <Input
-                id="packetUnit"
-                name="packetUnit"
-                placeholder="Enter packet unit (e.g., kg, piece)"
-                value={productData.packetUnit}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="packetPrice">Packet Price</Label>
-              <Input
-                id="packetPrice"
-                name="packetPrice"
-                type="number"
-                placeholder="Enter packet price"
-                value={productData.packetPrice}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="boxQuantity">Box Quantity</Label>
-              <Input
-                id="boxQuantity"
-                name="boxQuantity"
-                type="number"
-                placeholder="Enter box quantity"
-                value={productData.boxQuantity}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="boxUnit">Box Unit</Label>
-              <Input
-                id="boxUnit"
-                name="boxUnit"
-                placeholder="Enter box unit (e.g., kg, piece)"
-                value={productData.boxUnit}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="category">Category</Label>
-              <Input
-                id="category"
-                name="category"
-                placeholder="Enter product category"
-                value={productData.category}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                name="description"
-                placeholder="Enter product description"
-                value={productData.description}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="thumbnail">Thumbnail</Label>
-              <Input
-                id="thumbnail"
-                name="thumbnail"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                required
-              />
-            </div>
-            <div className="col-span-2 lg:col-span-4">
-              <Label htmlFor="detailedImages">Detailed Images</Label>
-              <input
-                className="px-4 w-full"
-                id="detailedImages"
-                name="detailedImages"
-                type="file"
-                accept="image/*"
-                multiple={true} // Allows selecting multiple files
-                onChange={handleFileChange}
-                required
-              />
-            </div>
+        <CardContent className='space-y-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+            {Object.entries(productData).map(([key, value]) => {
+              if (key === 'thumbnail') {
+                return (
+                  <div key={key}>
+                    <Label htmlFor={key}>Thumbnail</Label>
+                    <Input
+                      id={key}
+                      name={key}
+                      type='file'
+                      accept='image/*'
+                      onChange={handleFileChange}
+                      required={key === 'thumbnail'}
+                    />
+                  </div>
+                );
+              }
+              if (key === 'detailedImages') {
+                return (
+                  <div
+                    key={key}
+                    className='col-span-2 lg:col-span-4 max-w-60 border-none outline-none p-4'
+                  >
+                    <Label htmlFor={key}>Detailed Images</Label>
+                    <input
+                      id={key}
+                      name={key}
+                      type='file'
+                      accept='image/*'
+                      multiple
+                      onChange={handleFileChange}
+                      className='block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none'
+                    />
+                  </div>
+                );
+              }
+              if (key === 'category') {
+                return (
+                  <div key={key}>
+                    <Label htmlFor={key}>Category</Label>
+                    <select
+                      id={key}
+                      name={key}
+                      value={value}
+                      onChange={handleInputChange}
+                      required
+                      className='border p-2 rounded'
+                    >
+                      <option value=''>Select Category</option>
+                      {categories.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              }
+
+              if (typeof value === 'boolean') {
+                return (
+                  <div key={key}>
+                    <Label htmlFor={key}>{key}</Label>
+                    <input
+                      id={key}
+                      name={key}
+                      type='checkbox'
+                      checked={value}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                );
+              }
+
+              if (typeof value === 'number') {
+                return (
+                  <div key={key}>
+                    <Label htmlFor={key}>{key}</Label>
+                    <Input
+                      id={key}
+                      name={key}
+                      type='number'
+                      placeholder={`Enter ${key}`}
+                      value={value}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                );
+              }
+
+              return (
+                <div key={key}>
+                  <Label htmlFor={key}>{key}</Label>
+                  {key === 'description' ? (
+                    <Textarea
+                      id={key}
+                      name={key}
+                      placeholder={`Enter ${key}`}
+                      value={value}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  ) : (
+                    <Input
+                      id={key}
+                      name={key}
+                      placeholder={`Enter ${key}`}
+                      value={value}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className='flex justify-center'>
           <Button
-            type="submit"
-            variant="primary"
+            type='submit'
+            variant='primary'
             disabled={isSubmitting}
-            className="w-48 self-center bg-orange-200 text-main"
+            className='w-48 self-center bg-yellow-100 text-main'
           >
             {isSubmitting ? 'Creating...' : 'Create Product'}
           </Button>

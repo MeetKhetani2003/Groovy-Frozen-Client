@@ -2,15 +2,41 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { assets } from '@/utils/AssetImport';
+
 const categories = [
-  'Dairy Products',
-  'Sauce',
-  'Gravy',
-  'Dal',
-  'Snacks',
-  'Starter',
-  'Tava Special',
-  'Spices And Masala',
+  {
+    name: 'Dairy Products',
+    imageUrl: assets.dairy,
+  },
+  {
+    name: 'Sauce',
+    imageUrl: assets.sauce, // Replace with actual image URL
+  },
+  {
+    name: 'Gravy',
+    imageUrl: assets.gravy, // Replace with actual image URL
+  },
+  {
+    name: 'Dal',
+    imageUrl: assets.dal, // Replace with actual image URL
+  },
+  {
+    name: 'Snacks',
+    imageUrl: assets.snacks, // Replace with actual image URL
+  },
+  {
+    name: 'Starter',
+    imageUrl: assets.starter, // Replace with actual image URL
+  },
+  {
+    name: 'Tava Special',
+    imageUrl: assets.tava, // Replace with actual image URL
+  },
+  {
+    name: 'Spices And Masala',
+    imageUrl: assets.spice, // Replace with actual image URL
+  },
 ];
 
 const Menu = () => {
@@ -39,19 +65,21 @@ const Menu = () => {
           <div
             key={index}
             className='cursor-pointer bg-gray-200 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300'
-            onClick={() => handleCategoryRedirect(category)}
+            onClick={() => handleCategoryRedirect(category.name)}
           >
             <img
-              src={`https://via.placeholder.com/300x200.png?text=${category}`} // Placeholder image (replace with actual images)
-              alt={category}
+              src={category.imageUrl} // Use the imageUrl for the category
+              alt={category.name}
               className='w-full h-[200px] object-cover'
             />
             <div className='p-4'>
-              <h3 className='text-xl font-semibold text-center'>{category}</h3>
+              <h3 className='text-xl font-semibold text-center'>
+                {category.name}
+              </h3>
               <button
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent redirect when button is clicked
-                  handleCategoryRedirect(category);
+                  handleCategoryRedirect(category.name);
                 }}
                 className='mt-4 bg-main hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded w-full'
               >

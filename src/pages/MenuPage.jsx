@@ -1,4 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
 import {
   Pagination,
   PaginationContent,
@@ -7,15 +6,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { debounce } from 'lodash'; // For debouncing search input
+import { debounce } from 'lodash';
 import { SearchIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useCart } from '@/hooks/cartHook';
 import { useProductStore } from '@/zustand/apis/ProductStore';
 import MenuProductcard from '@/components/molicuels/MenuProductcard';
 
 const Menu = () => {
+  const navigate = useNavigate();
   const { products, setProducts, totalProducts, getPaginatedProducts } =
     useProductStore();
   const [categories, setCategories] = useState(['All Categories']);
@@ -25,7 +26,7 @@ const Menu = () => {
   const { addPacketToCart } = useCart();
 
   const [filters, setFilters] = useState({
-    category: 'All Categories', // Default category
+    category: 'All Categories',
     pricemin: 0,
     pricemax: 1000,
     search: '',
@@ -45,6 +46,7 @@ const Menu = () => {
   const handleSearchClick = () => {
     debouncedSearchHandler(debouncedSearch);
   };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       debouncedSearchHandler(debouncedSearch);
@@ -52,7 +54,6 @@ const Menu = () => {
   };
 
   useEffect(() => {
-    // Get category from URL if available
     const queryParams = new URLSearchParams(window.location.search);
     const initialCategory = queryParams.get('category') || 'All Categories';
 
@@ -60,8 +61,22 @@ const Menu = () => {
       ...prevFilters,
       category: initialCategory,
     }));
+    setCurrentPage(1);
+  }, []);
 
-    setCurrentPage(1); // Reset to first page when filters are initialized
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setCategories([
+      'All Categories',
+      'Dairy Products',
+      'Sauce',
+      'Gravy',
+      'Dal',
+      'Snacks',
+      'Starter',
+      'Tava Special',
+      'Spices And Masala',
+    ]);
   }, []);
 
   useEffect(() => {
@@ -75,11 +90,6 @@ const Menu = () => {
             : {}),
         });
 
-        const uniqueCategories = [
-          'All Categories',
-          ...new Set(response.data.products.map((product) => product.category)),
-        ];
-        setCategories(uniqueCategories);
         setProducts(response.data.products);
         console.log('Products fetched successfully:', response.data);
       } catch (error) {
@@ -89,8 +99,8 @@ const Menu = () => {
       }
     };
 
-    // Fetch products only if the category or page changes
-    if (filters.category !== 'All Categories' || filters.search) {
+    // Only fetch products if the category or search term has changed
+    if (filters.category || filters.search) {
       fetchProducts();
     }
   }, [currentPage, filters, getPaginatedProducts]);
@@ -105,64 +115,64 @@ const Menu = () => {
       ...prev,
       [name]: value,
     }));
-    setCurrentPage(1); // Reset to the first page on filter change
+    setCurrentPage(1);
+
+    if (name === 'category') {
+      const newQueryParams = new URLSearchParams(window.location.search);
+      if (value === 'All Categories') {
+        newQueryParams.delete('category');
+      } else {
+        newQueryParams.set('category', value);
+      }
+      navigate(`?${newQueryParams.toString()}`);
+    }
   };
-
-  if (loading) {
-    return <div className='text-center pt-24 text-xl'>Loading...</div>;
-  }
-
-  if (!products || products.length === 0) {
-    return (
-      <div className='text-center pt-24 text-xl'>No products available</div>
-    );
-  }
 
   const totalPages = Math.ceil(totalProducts / pageLimit);
 
   return (
     <div className='mx-8 lg:max-w-[1400px] lg:mx-auto pt-20 min-h-screen'>
-      <div className='flex justify-between items-center mb-6'>
+      <div className='flex justify-between gap-4 items-center mb-6'>
         <input
           type='text'
           name='search'
           value={debouncedSearch}
           onChange={(e) => setDebouncedSearch(e.target.value)}
           onKeyDown={handleKeyDown}
-          className='w-full p-2 border rounded-md'
+          className='w-1/2 p-2 border rounded-md'
           placeholder='Search products'
         />
+        <div className='hidden lg:block w-1/2 rounded-lg shadow-lg'>
+          <select
+            name='category'
+            value={filters.category}
+            onChange={handleFilterChange}
+            className='w-full p-2 border rounded-md'
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
         <button
           onClick={handleSearchClick}
           className='ml-2 p-2 bg-blue-500 rounded-md text-white'
         >
-          <SearchIcon className='h-5 w -5' />
+          <SearchIcon className='h-5 w-5' />
         </button>
       </div>
 
-      <div className='flex'>
-        <div className='hidden lg:block w-1/4 bg-gray-100 p-6 rounded-lg shadow-lg'>
-          <h2 className='text-xl font-semibold mb-4'>Filters</h2>
-          <div className='mb-4'>
-            <label className='block text-sm font-medium mb-2'>Category</label>
-            <select
-              name='category'
-              value={filters.category}
-              onChange={handleFilterChange}
-              className='w-full p-2 border rounded-md'
-            >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className='w-3/4 ml-6'>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-20 mt-24'>
-            {Array.isArray(products) &&
+      <div>
+        <div className='max-w-7xl mx-auto ml-6'>
+          <div className='grid grid-cols-1 min-h-[50vh] md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-4 gap-y-20 mt-24'>
+            {loading ? (
+              <div>Loading...</div>
+            ) : Array.isArray(products) && products.length <= 0 ? (
+              <div>Products of this category are not available</div>
+            ) : (
+              Array.isArray(products) &&
               products.map((product) => (
                 <MenuProductcard
                   onAddToCart={() => addPacketToCart(product._id, 1)}
@@ -173,7 +183,8 @@ const Menu = () => {
                   heading={product.category}
                   price={`₹${product.packetPrice} / ${product.packetQuantity}${product.packetUnit}`}
                 />
-              ))}
+              ))
+            )}
           </div>
           <div className='flex justify-center mt-6'>
             <Pagination>

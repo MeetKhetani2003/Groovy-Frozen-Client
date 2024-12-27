@@ -1,17 +1,18 @@
-import { jwtDecode } from 'jwt-decode';
-import { FacebookIcon, InstagramIcon, ShoppingBag } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { FaWhatsapp } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-
-import Logo from '@/components/atoms/Logo';
+/* eslint-disable simple-import-sort/imports */
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { jwtDecode } from 'jwt-decode';
+import { FacebookIcon, InstagramIcon, ShoppingBag } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { FaWhatsapp } from 'react-icons/fa';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import { useUser } from '@/zustand/apis/userState';
+import Logo from '@/components/atoms/Logo';
 
 import LinkAtom from '../atoms/LinkAtom';
 import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
@@ -22,22 +23,23 @@ const NavBar = () => {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const { userData, setUserData } = useUser();
   const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     const getToken = localStorage.getItem('authToken');
 
     if (getToken) {
       try {
-        const user = jwtDecode(getToken); // Decode only if the token exists
+        const user = jwtDecode(getToken);
         setUserData(user);
         setIsLoggedin(true);
       } catch (error) {
         console.error('Invalid token', error);
-        // Handle invalid token, possibly redirect to login
-        localStorage.removeItem('authToken'); // Remove invalid token
-        setIsLoggedin(false); // Set logged in state to false
+        localStorage.removeItem('authToken');
+        setIsLoggedin(false);
       }
     } else {
-      setIsLoggedin(false); // If no token is found, ensure logged out state
+      setIsLoggedin(false);
     }
 
     const handleScroll = () => {
@@ -58,6 +60,8 @@ const NavBar = () => {
     navigate('/checkout');
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
     <nav
       className={`fixed w-full z-[100] transition-all duration-300 ${
@@ -66,13 +70,29 @@ const NavBar = () => {
     >
       <div className='flex items-center mx-5 lg:mx-16 justify-between p-4'>
         <div className='space-x-8 hidden lg:block'>
-          <LinkAtom title={'Home'} url={'/'} />
-          <LinkAtom title={'Our Products'} url={'/menu'} />
-          <LinkAtom title={'About us'} url={'/about'} />
-          <LinkAtom title={'Contact us'} url={'/contact'} />
+          <LinkAtom
+            title={'Home'}
+            url={'/'}
+            className={isActive('/') ? 'text-main font-bold' : ''}
+          />
+          <LinkAtom
+            title={'Our Products'}
+            url={'/menu'}
+            className={isActive('/menu') ? 'text-main font-bold' : ''}
+          />
+          <LinkAtom
+            title={'About us'}
+            url={'/about'}
+            className={isActive('/about') ? 'text-main font-bold' : ''}
+          />
+          <LinkAtom
+            title={'Contact us'}
+            url={'/contact'}
+            className={isActive('/contact') ? 'text-main font-bold' : ''}
+          />
           <Dialog>
             <DialogTrigger asChild>
-              <button className=' font-montserrat font-medium hover:text-main transition-all duration-300'>
+              <button className='font-montserrat font-medium hover:text-main transition-all duration-300'>
                 Become a distributor
               </button>
             </DialogTrigger>
@@ -89,7 +109,6 @@ const NavBar = () => {
           <InstagramIcon className='hover:text-main cursor-pointer hidden lg:block' />
           <FacebookIcon className='hover:text-main cursor-pointer hidden lg:block' />
           <FaWhatsapp className='text-2xl hover:text-main cursor-pointer hidden lg:block' />
-
           <ShoppingBag
             onClick={handleCartClick}
             className={`hover:text-main cursor-pointer ${
@@ -164,42 +183,6 @@ const NavBar = () => {
           )}
         </div>
       </div>
-
-      {/* Cart Dialog */}
-      {/* <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Cart Details</DialogTitle>
-          </DialogHeader>
-          <div className="p-4">
-            {cartDetails.length > 0 ? (
-              cartDetails.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col p-4 border-b space-y-2"
-                >
-                  <div className="flex justify-between">
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-gray-600">${item.totalAmt}</p>
-                  </div>
-                  <p className="text-sm">Quantity: {item.quantity}</p>
-                  <p className="text-sm">Unit Type: {item.unitType}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-gray-500">Your cart is empty</p>
-            )}
-            {cartDetails.length > 0 && (
-              <button
-                className="mt-4 bg-main text-white px-4 py-2 rounded-lg"
-                onClick={handleCheckout}
-              >
-                Checkout
-              </button>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog> */}
     </nav>
   );
 };
