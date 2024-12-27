@@ -17,7 +17,6 @@ export const useProductStore = create((set, get) => ({
   createProduct: async (product) => {
     try {
       const response = await axiosInstance.post('/products/create', product);
-      console.log('Product created successfully:', response);
       return response.data;
     } catch (error) {
       console.error('Error in createProduct hook:', error);
@@ -33,7 +32,6 @@ export const useProductStore = create((set, get) => ({
       // Check cache
       const cache = get().cache;
       if (cache[cacheKey]) {
-        console.log('Using cached data for:', cacheKey);
         const cachedData = cache[cacheKey];
         set({
           products: cachedData.products,
@@ -55,7 +53,6 @@ export const useProductStore = create((set, get) => ({
 
       // Fetch data from API
       const response = await axiosInstance.get(`/products/${queryString}`);
-      console.log('Products fetched successfully:', response.data);
 
       // Update Zustand state and cache
       const responseData = response.data;
@@ -85,7 +82,6 @@ export const useProductStore = create((set, get) => ({
   getSingleProduct: async (id) => {
     try {
       const response = await axiosInstance.get(`/products/get/${id}`);
-      console.log('Product fetched successfully:', response.data);
       set({ product: response.data });
       return response.data;
     } catch (error) {

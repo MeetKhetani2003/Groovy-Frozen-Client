@@ -31,7 +31,7 @@ const Hero = () => {
 
             <button
               onClick={() => navigate('/contact')}
-              className='mt-4 bg-primaryBg border text-lg border-main shadow-lg hover:bg-main text-main hover:text-white lg:px-6 lg:py-2 rounded-lg hover:shadow-lg hover:shadow-primaryBg'
+              className='mt-4 bg-primaryBg border text-lg border-main shadow-lg hover:bg-main text-main hover:text-white  px-6 py-2 rounded-lg hover:shadow-lg hover:shadow-primaryBg'
             >
               Inquire Now
             </button>

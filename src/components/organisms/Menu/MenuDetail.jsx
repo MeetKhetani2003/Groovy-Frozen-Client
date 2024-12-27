@@ -2,17 +2,17 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
   CarouselNext,
+  CarouselPrevious,
 } from '@/components/ui/carousel'; // Import ShadCN Carousel components
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card'; // Import ShadCN Card components
 import { useCart } from '@/hooks/cartHook';
 import { useProducts } from '@/hooks/ProductHook';
 import { useProductStore } from '@/zustand/apis/ProductStore';
-import { Card, CardContent } from '@/components/ui/card'; // Import ShadCN Card components
 
 const MenuDetail = () => {
   const { getOneProduct } = useProducts();
