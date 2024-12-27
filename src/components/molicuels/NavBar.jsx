@@ -115,72 +115,74 @@ const NavBar = () => {
               isLoggedin ? 'block' : 'hidden'
             }`}
           />
-          {!isLoggedin ? (
-            <>
-              <LinkAtom title={'Login'} url={'/auth/login'} />
-              <LinkAtom title={'Signup'} url={'/auth/signup'} />
-            </>
-          ) : (
+          <div className='hidden lg:block'>
+            {isLoggedin ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className='w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer'>
+                    {userData?.avatar ? (
+                      <img
+                        src={userData.avatar}
+                        alt='Avatar'
+                        className='w-full h-full rounded-full object-cover'
+                      />
+                    ) : (
+                      <span className='text-gray-700 font-bold'>M</span>
+                    )}
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='bg-primaryBg border border-gray-200 p-2 rounded-lg shadow-lg mt-2'>
+                  <DropdownMenuItem
+                    onClick={() => localStorage.clear()}
+                    className='hover:bg-red-600'
+                  >
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <LinkAtom title='Login' url='/auth/login' />
+            )}
+          </div>
+
+          {/* Mobile Screen - Dropdown */}
+          <div className='block lg:hidden'>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className='w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer'>
-                  {userData?.avatar ? (
-                    <img
-                      src={userData.avatar}
-                      alt='Avatar'
-                      className='w-full h-full rounded-full object-cover'
-                    />
-                  ) : (
-                    <span className='text-gray-700 font-bold'>M</span>
-                  )}
+                  <span className='text-gray-700 font-bold'>☰</span>
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className='bg-primaryBg border border-gray-200 p-2 rounded-lg shadow-lg mt-2'>
-                <DropdownMenuItem className='text-gray-800 hover:bg-hoverBg'>
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem className='text-gray-800 hover:bg-hoverBg md:hidden'>
-                  <LinkAtom
-                    title={'Home'}
-                    className='text-gray-800'
-                    url={'/'}
-                  />
-                </DropdownMenuItem>
-                <DropdownMenuItem className='text-gray-800 hover:bg-hoverBg md:hidden'>
-                  <LinkAtom
-                    title={'Our Products'}
-                    className='text-gray-800'
-                    url={'/menu'}
-                  />
-                </DropdownMenuItem>
-                <DropdownMenuItem className='text-gray-800 hover:bg-hoverBg md:hidden'>
-                  <LinkAtom
-                    title={'About us'}
-                    className='text-gray-800'
-                    url={'/about'}
-                  />
-                </DropdownMenuItem>
-                <DropdownMenuItem className='text-gray-800 hover:bg-hoverBg md:hidden'>
-                  <LinkAtom
-                    title={'Contact us'}
-                    className='text-gray-800'
-                    url={'/contact'}
-                  />
-                </DropdownMenuItem>
-                <DropdownMenuItem className=' hover:bg-red-600'>
-                  <LinkAtom
-                    onClick={() => {
-                      localStorage.removeItem('authToken');
-                      setUserData(null);
-                      setIsLoggedin(false);
-                    }}
-                    title={'Logout'}
-                    type='danger'
-                  />
-                </DropdownMenuItem>
+                {!isLoggedin ? (
+                  <>
+                    <DropdownMenuItem>
+                      <LinkAtom title='Login' url='/auth/login' />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LinkAtom title='Home' url='/' />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LinkAtom title='Our Products' url='/menu' />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LinkAtom title='About us' url='/about' />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LinkAtom title='Contact us' url='/contact' />
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem
+                    onClick={() => localStorage.clear()}
+                    className='hover:bg-red-600'
+                  >
+                    Logout
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
-          )}
+          </div>
         </div>
       </div>
     </nav>
