@@ -142,7 +142,7 @@ const Menu = () => {
           className='w-1/2 p-2 border rounded-md'
           placeholder='Search products'
         />
-        <div className='hidden lg:block w-1/2 rounded-lg shadow-lg'>
+        <div className=' w-1/2 rounded-lg shadow-lg'>
           <select
             name='category'
             value={filters.category}
@@ -165,7 +165,7 @@ const Menu = () => {
       </div>
 
       <div>
-        <div className='max-w-7xl mx-auto ml-6'>
+        <div className='max-w-7xl mx-auto md:ml-6'>
           <div className='grid grid-cols-1 min-h-[50vh] md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-4 gap-y-20 mt-24'>
             {loading ? (
               <div>Loading...</div>

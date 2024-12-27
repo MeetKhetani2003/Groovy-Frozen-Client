@@ -9,7 +9,7 @@ const MenuProductCard = ({ img, title, heading, price, to, onAddToCart }) => (
     <div className='relative w-full rounded-lg'>
       <Link to={to}>
         <img
-          className='w-full absolute -top-24 max-h-60 object-contain transition-transform duration-300 transform hover:scale-95 drop-shadow-md hover:drop-shadow-2xl'
+          className='w-full absolute -top-20 md:-top-24 max-h-60 object-contain transition-transform duration-300 transform hover:scale-95 drop-shadow-md hover:drop-shadow-2xl'
           src={img}
           alt='food1'
         />
@@ -17,7 +17,7 @@ const MenuProductCard = ({ img, title, heading, price, to, onAddToCart }) => (
     </div>
 
     {/* Content Section */}
-    <div className='mt-72 md:mt-56 lg:mt-44 font-montserrat w-full text-center space-y-3 z-10'>
+    <div className='mt-44 md:mt-56 lg:mt-44 font-montserrat w-full text-center space-y-3 z-10'>
       <Link to={to}>
         <p className='text-xl font-semibold text-gray-800'>{title}</p>
         <Separator className='bg-primaryBg' />

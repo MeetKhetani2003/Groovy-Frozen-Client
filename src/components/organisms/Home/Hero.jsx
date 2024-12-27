@@ -8,8 +8,12 @@ const Hero = () => {
   return (
     <div>
       <div className='relative'>
-        <img className='w-full h-[100vh]' src={assets.bgImg} alt='bg' />
-        <div className='absolute top-[40%] text-center lg:top-24  left-6 lg:left-24 flex items-center justify-center'>
+        <img
+          className='w-full h-[90vh] md:h-[100vh]'
+          src={assets.bgImg}
+          alt='bg'
+        />
+        <div className='absolute top-[30%] md:top-[40%] text-center lg:top-24  left-0 lg:left-24 flex items-center justify-center'>
           <div className='lg:w-2/4 hidden lg:block'>
             <img src={assets.veg} alt='veg' />
           </div>

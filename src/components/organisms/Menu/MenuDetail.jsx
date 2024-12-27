@@ -6,7 +6,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'; // Import ShadCN Carousel components
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card'; // Import ShadCN Card components
@@ -21,7 +21,7 @@ const MenuDetail = () => {
   const { addPacketToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState('');
   const [activeIndex, setActiveIndex] = useState(0); // Store the active carousel index
-
+  const navigate = useNavigate();
   const fetchProduct = async () => {
     try {
       if (product === null) {
@@ -69,7 +69,7 @@ const MenuDetail = () => {
     <div>
       <div className='container pt-20 mx-auto px-4 py-8 flex md:flex-row flex-col max-w-7xl'>
         {/* Left Section: Image Carousel */}
-        <div className='flex flex-col gap-6 md:gap-8 w-1/2'>
+        <div className='flex flex-col gap-6 md:gap-8 md:w-1/2'>
           <div className='w-full'>
             <img
               src={selectedImage || 'No image available'}
@@ -117,7 +117,7 @@ const MenuDetail = () => {
         </div>
 
         {/* Right Section: Product Details */}
-        <div className='mt-8 text-center md:text-left ml-10'>
+        <div className='mt-8 text-center md:text-left md:ml-10'>
           <h2 className='text-3xl font-semibold text-gray-800'>
             {product?.name}
           </h2>
@@ -146,9 +146,10 @@ const MenuDetail = () => {
           <div className='mt-6'>
             <Button
               className='bg-main text-white px-6 py-2 rounded-lg shadow-md hover:bg-hoverCardBg'
-              onClick={() => addPacketToCart(product._id, 1)}
+              // onClick={() => addPacketToCart(product._id, 1)}
+              onClick={() => navigate('/contact')}
             >
-              Add packets to cart
+              Inquire Now
             </Button>
           </div>
         </div>

@@ -39,15 +39,15 @@ const Benifits = () => {
         {benefits.map((benefit, index) => (
           <Card
             key={index}
-            className='max-w-xs shadow-lg rounded-xl p-6 bg-white transform transition duration-300 hover:scale-105'
+            className='w-64 h-64 shadow-lg rounded-xl p-6 bg-white transform transition duration-300 hover:scale-105 flex flex-col items-center justify-between'
           >
-            <CardHeader className='text-center'>
+            <CardHeader className='flex justify-center items-center'>
               {/* Render either SVG or Icon based on the type */}
               {typeof benefit.icon === 'string' ? (
                 <img
                   src={benefit.icon}
                   alt={benefit.title}
-                  className='w-16 h-16 mx-auto p-2 bg-yellow-100 rounded-full'
+                  className='w-16 h-16 p-2 bg-yellow-100 rounded-full'
                 />
               ) : (
                 <div className='flex justify-center items-center w-16 h-16 bg-yellow-100 rounded-full'>
