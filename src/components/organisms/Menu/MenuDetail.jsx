@@ -6,7 +6,6 @@ import {
   CarouselNext,
 } from '@/components/ui/carousel'; // Import ShadCN Carousel components
 import { useEffect, useState } from 'react';
-import ReactImageMagnify from 'react-image-magnify';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
