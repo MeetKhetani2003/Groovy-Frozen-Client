@@ -5,7 +5,6 @@ import {
   Grid,
   TextField,
   Typography,
-  Icon,
 } from '@mui/material';
 import { Clock10Icon, PhoneIcon } from 'lucide-react';
 import { useState } from 'react';
@@ -57,7 +56,7 @@ const ContactUs = () => {
   };
 
   return (
-    <Container maxWidth='lg' sx={{ pt: 10, pb: 6 }}>
+    <Container maxWidth='lg' sx={{ pt: 12, pb: 6 }}>
       <Typography
         variant='h4'
         className='text-center'

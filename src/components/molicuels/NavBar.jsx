@@ -9,6 +9,7 @@ import { jwtDecode } from 'jwt-decode';
 import { FacebookIcon, InstagramIcon, ShoppingBag } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
+import { RiMenu4Line } from 'react-icons/ri';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useUser } from '@/zustand/apis/userState';
@@ -68,7 +69,7 @@ const NavBar = () => {
         isScrolled ? 'bg-primaryBg shadow-md' : 'bg-transparent'
       }`}
     >
-      <div className='flex items-center mx-5 lg:mx-16 justify-between p-4'>
+      <div className='flex items-center mx-5 lg:mx-12 justify-between p-4'>
         <div className='space-x-8 hidden lg:block'>
           <LinkAtom
             title={'Home'}
@@ -149,16 +150,15 @@ const NavBar = () => {
           <div className='block lg:hidden'>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className='w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer'>
-                  <span className='text-gray-700 font-bold'>☰</span>
+                <div className='w-10 h-10 rounded-full flex items-center justify-center cursor-pointer'>
+                  <span className='text-gray-700 text-2xl font-bold'>
+                    <RiMenu4Line />
+                  </span>
                 </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className='bg-primaryBg border border-gray-200 p-2 rounded-lg shadow-lg mt-2'>
+              <DropdownMenuContent className='bg-primaryBg  border border-gray-200 px-4 py-2 gap-3 rounded-lg shadow-lg mt-2'>
                 {!isLoggedin ? (
-                  <>
-                    <DropdownMenuItem>
-                      <LinkAtom title='Login' url='/auth/login' />
-                    </DropdownMenuItem>
+                  <div className='space-y-3'>
                     <DropdownMenuItem>
                       <LinkAtom title='Home' url='/' />
                     </DropdownMenuItem>
@@ -171,14 +171,41 @@ const NavBar = () => {
                     <DropdownMenuItem>
                       <LinkAtom title='Contact us' url='/contact' />
                     </DropdownMenuItem>
-                  </>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button className='font-montserrat font-medium hover:text-main transition-all duration-300'>
+                          Become a distributor
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className='p-0 max-w-md'>
+                        <Distributor />
+                      </DialogContent>
+                    </Dialog>
+                    <DropdownMenuItem>
+                      <LinkAtom title='Login' url='/auth/login' />
+                    </DropdownMenuItem>
+                  </div>
                 ) : (
-                  <DropdownMenuItem
-                    onClick={() => localStorage.clear()}
-                    className='hover:bg-red-600'
-                  >
-                    Logout
-                  </DropdownMenuItem>
+                  <div className='space-y-3'>
+                    <DropdownMenuItem>
+                      <LinkAtom title='Home' url='/' />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LinkAtom title='Our Products' url='/menu' />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LinkAtom title='About us' url='/about' />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LinkAtom title='Contact us' url='/contact' />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => localStorage.clear()}
+                      className='hover:bg-red-600'
+                    >
+                      Logout
+                    </DropdownMenuItem>
+                  </div>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>

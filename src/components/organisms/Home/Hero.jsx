@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 
-import { Button } from '@/components/ui/button';
 import { assets } from '@/utils/AssetImport';
 
 const Hero = () => {
@@ -9,11 +8,11 @@ const Hero = () => {
     <div>
       <div className='relative'>
         <img
-          className='w-full h-[90vh] md:h-[100vh]'
+          className='w-full h-[70vh] md:h-[100vh]'
           src={assets.bgImg}
           alt='bg'
         />
-        <div className='absolute top-[30%] md:top-[40%] text-center lg:top-24  left-0 lg:left-24 flex items-center justify-center'>
+        <div className='absolute top-[30%] md:top-[40%] text-center lg:top-24  left-0 lg:left-22 flex items-center justify-center px-6'>
           <div className='lg:w-2/4 hidden lg:block'>
             <img src={assets.veg} alt='veg' />
           </div>

@@ -15,7 +15,7 @@ const Footer = () => {
           src={assets.footer}
           alt='footer'
         />
-        <div className='absolute bottom-0  h-[15.6rem] lg:h-80 z-10 w-full bg-[#000000b6] p-6'>
+        <div className='absolute bottom-0  h-[18rem] lg:h-80 z-10 w-full bg-[#000000b6] p-6'>
           <div className='flex items-center flex-col justify-center lg:gap-6 gap-5'>
             <Logo />
             <div className='flex gap-6'>
