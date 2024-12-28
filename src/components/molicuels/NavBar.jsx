@@ -6,11 +6,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { jwtDecode } from 'jwt-decode';
-import { FacebookIcon, InstagramIcon, ShoppingBag } from 'lucide-react';
+import { FacebookIcon, InstagramIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { RiMenu4Line } from 'react-icons/ri';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { useUser } from '@/zustand/apis/userState';
 import Logo from '@/components/atoms/Logo';
@@ -23,7 +23,7 @@ const NavBar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const { userData, setUserData } = useUser();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
@@ -53,13 +53,13 @@ const NavBar = () => {
     };
   }, [setUserData]);
 
-  const handleCartClick = () => {
-    if (!isLoggedin) {
-      navigate('/signin');
-      return;
-    }
-    navigate('/checkout');
-  };
+  // const handleCartClick = () => {
+  //   if (!isLoggedin) {
+  //     navigate('/signin');
+  //     return;
+  //   }
+  //   navigate('/checkout');
+  // };
 
   const isActive = (path) => location.pathname === path;
 
@@ -110,12 +110,12 @@ const NavBar = () => {
           <InstagramIcon className='hover:text-main cursor-pointer hidden lg:block' />
           <FacebookIcon className='hover:text-main cursor-pointer hidden lg:block' />
           <FaWhatsapp className='text-2xl hover:text-main cursor-pointer hidden lg:block' />
-          <ShoppingBag
+          {/* <ShoppingBag
             onClick={handleCartClick}
             className={`hover:text-main cursor-pointer ${
               isLoggedin ? 'block' : 'hidden'
             }`}
-          />
+          /> */}
           <div className='hidden lg:block'>
             {isLoggedin ? (
               <DropdownMenu>
