@@ -64,9 +64,9 @@ const DetailedImages = () => {
     <div className='max-w-7xl mx-auto p-5 sm:p-10'>
       <div className='flex flex-col lg:flex-row gap-8 pt-28'>
         {/* Product Images Section */}
-        <div className='flex w-full lg:w-1/2'>
-          {/* Thumbnail Images */}
-          <div className='flex  lg:flex-col gap-4 order-2 lg:order-1 overflow-x-auto lg:overflow-visible whitespace-nowrap'>
+        <div className='flex flex-col sm:flex-row gap-4 w-full lg:w-1/2'>
+          {/* Thumbnails - scrollable on mobile */}
+          <div className='flex sm:flex-col gap-2 sm:gap-4 order-2 sm:order-1 overflow-x-auto sm:overflow-visible whitespace-nowrap sm:whitespace-normal'>
             {Array.isArray(product.detailedImages) &&
               product.detailedImages.map((image, index) => (
                 <img
@@ -74,14 +74,15 @@ const DetailedImages = () => {
                   src={image}
                   alt={`Thumbnail ${index + 1}`}
                   onMouseEnter={() => setMainImage(image)}
-                  className={`w-[100px] h-[100px] object-cover cursor-pointer border-2 flex-shrink-0 ${
+                  className={`w-16 h-16 sm:w-[100px] sm:h-[100px] object-cover cursor-pointer border-2 flex-shrink-0 ${
                     mainImage === image ? 'border-black' : 'border-transparent'
                   }`}
                 />
               ))}
           </div>
+
           {/* Main Image */}
-          <div className='w-full flex-1 lg:w-auto order-1 lg:order-2'>
+          <div className='w-full flex-1 order-1 sm:order-2'>
             <InnerImageZoom
               src={mainImage}
               zoomSrc={mainImage}
@@ -90,7 +91,7 @@ const DetailedImages = () => {
               moveType='drag'
               fullscreenOnMobile={true}
               mobileBreakpoint={640}
-              className='w-full max-w-lg '
+              className='w-full max-w-lg h-auto'
               fadeDuration={150}
             />
           </div>
