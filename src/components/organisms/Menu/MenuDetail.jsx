@@ -1,203 +1,205 @@
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'; // Import ShadCN Carousel components
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import InnerImageZoom from 'react-inner-image-zoom';
+import { useParams } from 'react-router-dom';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card'; // Import ShadCN Card components
-import { useCart } from '@/hooks/cartHook';
-import { useProducts } from '@/hooks/ProductHook';
 import { useProductStore } from '@/zustand/apis/ProductStore';
 
-const MenuDetail = () => {
-  const { getOneProduct } = useProducts();
-  const { product } = useProductStore();
+import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css';
+
+const DetailedImages = () => {
+  const { getSingleProduct, product, setProduct } = useProductStore();
+  const [loading, setLoading] = useState(true);
+  const [mainImage, setMainImage] = useState('');
   const { id } = useParams();
-  const { addPacketToCart } = useCart();
-  const [selectedImage, setSelectedImage] = useState('');
-  const [activeIndex, setActiveIndex] = useState(0); // Store the active carousel index
-  const navigate = useNavigate();
-  const fetchProduct = async () => {
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+  const fetchProducts = async () => {
     try {
-      if (product === null) {
-        await getOneProduct(id);
+      const response = await getSingleProduct(id);
+      setProduct(response.data);
+
+      // Ensure that detailedImages exist before setting mainImage
+      if (
+        response.data.detailedImages &&
+        response.data.detailedImages.length > 0
+      ) {
+        setMainImage(response.data.detailedImages[0]);
       }
+      console.log('Product fetched successfully:', response.data);
     } catch (error) {
-      console.error('Error fetching product:', error);
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchProduct();
-    if (product?.detailedImages?.length > 0) {
-      setSelectedImage(product.detailedImages[0]); // Set default image to the first image in the list
-    }
-    fetchProduct();
-  }, [product]);
+  // Assuming we want the first product from the API response
+  // const product = product?.[0] || null;
+  // const detailedImages = product?.photos || []; // Using API field for images
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    const interval = setInterval(() => {
-      setActiveIndex((prevIndex) => {
-        const nextIndex = prevIndex + 1;
-        if (nextIndex >= product?.detailedImages?.length) {
-          return 0; // Loop back to the first image
-        }
-        return nextIndex;
-      });
-    }, 5000); // Change image every 3 seconds
+  // useEffect(() => {
+  //   if (detailedImages.length > 0) {
+  //     setMainImage(detailedImages[0]); // Set first image as default
+  //   }
+  // }, [detailedImages]);
 
-    return () => clearInterval(interval); // Clean up interval on component unmount
-  }, [product?.detailedImages?.length]);
+  if (loading) {
+    return (
+      <p className='text-center py-10 text-lg font-semibold'>
+        Loading product details...
+      </p>
+    );
+  }
 
-  useEffect(() => {
-    if (product?.detailedImages?.length > 0) {
-      setSelectedImage(product.detailedImages[activeIndex]);
-    }
-  }, [activeIndex, product?.detailedImages]);
-
-  const handleImageChange = (image) => {
-    setSelectedImage(image); // Update the selected image when a thumbnail is clicked
-  };
+  if (!product) {
+    return (
+      <p className='text-center py-10 text-lg font-semibold text-red-500'>
+        No product found.
+      </p>
+    );
+  }
 
   return (
-    <div>
-      <div className='container pt-20 mx-auto px-4 py-8 flex md:flex-row flex-col max-w-7xl'>
-        {/* Left Section: Image Carousel */}
-        <div className='flex flex-col gap-6 md:gap-8 md:w-1/2'>
-          <div className='w-full'>
-            <img
-              src={selectedImage || 'No image available'}
-              alt='Product'
-              className='md:min-w-[600px] object-contain rounded-lg max-h-80 mx-auto'
-            />
+    <div className='max-w-7xl mx-auto p-5 sm:p-10'>
+      <div className='flex flex-col lg:flex-row gap-8 pt-28'>
+        {/* Product Images Section */}
+        <div className='flex w-full lg:w-1/2'>
+          {/* Thumbnail Images */}
+          <div className='flex  lg:flex-col gap-4 order-2 lg:order-1 overflow-x-auto lg:overflow-visible whitespace-nowrap'>
+            {Array.isArray(product.detailedImages) &&
+              product.detailedImages.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Thumbnail ${index + 1}`}
+                  onMouseEnter={() => setMainImage(image)}
+                  className={`w-[100px] h-[100px] object-cover cursor-pointer border-2 flex-shrink-0 ${
+                    mainImage === image ? 'border-black' : 'border-transparent'
+                  }`}
+                />
+              ))}
           </div>
-
-          <div className='w-full flex justify-start gap-4'>
-            {product?.detailedImages?.map((image, index) => (
-              <div key={index} className='w-20'>
-                <Card>
-                  <CardContent className='flex items-center justify-center p-2'>
-                    <img
-                      src={image}
-                      alt={`Thumbnail ${index + 1}`}
-                      className={`rounded-lg cursor-pointer object-contain max-h-32 transition-transform transform hover:scale-105 ${
-                        selectedImage === image
-                          ? 'border-3 border-blue-500'
-                          : ''
-                      }`}
-                      onClick={() => handleImageChange(image)}
-                    />
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
-            {/* <div className='w-20 h-32'> 
-              <ReactImageMagnify
-                {...{
-                  smallImage: {
-                    alt: 'Image Zoom',
-                    src: selectedImage || 'No image available',
-                    isFluidWidth: true,
-                  },
-                  largeImage: {
-                    src: selectedImage || 'No image available',
-                    width: 1200,
-                    height: 800,
-                  },
-                }}
-              />
-            </div> */}
+          {/* Main Image */}
+          <div className='w-full flex-1 lg:w-auto order-1 lg:order-2'>
+            <InnerImageZoom
+              src={mainImage}
+              zoomSrc={mainImage}
+              zoomType='click'
+              zoomScale={1.8}
+              moveType='drag'
+              fullscreenOnMobile={true}
+              mobileBreakpoint={640}
+              className='w-full max-w-lg '
+              fadeDuration={150}
+            />
           </div>
         </div>
 
-        {/* Right Section: Product Details */}
-        <div className='mt-8 text-center md:text-left md:ml-10'>
-          <h2 className='text-3xl font-semibold text-gray-800'>
-            {product?.name}
-          </h2>
-          <p className='mt-2 text-gray-600'>{product?.description}</p>
+        {/* Product Details Section */}
+        <div className='w-full lg:w-1/2'>
+          {/* Product Title */}
+          <h1 className='text-4xl font-bold mb-6 text-gray-900'>
+            {product.name}
+          </h1>
 
-          <div className='mt-4'>
-            <span className='text-lg font-semibold text-main'>{`₹${product?.packetPrice} / ${product?.packetQuantity}${product?.packetUnit}`}</span>
+          {/* Price and Category */}
+          <div className='flex items-center gap-4 mb-8'>
+            <p className='text-3xl font-semibold text-gray-900'>
+              {` ₹ ${product.packetPrice} / KG`}
+            </p>
+            <p className='text-lg text-gray-600 bg-gray-100 px-3 py-1 rounded-full'>
+              {product.category}
+            </p>
           </div>
 
-          <div className='mt-2'>
-            <span className='text-sm text-gray-500'>
-              Category: {product?.category}
-            </span>
+          {/* Add to Cart and Wishlist Buttons */}
+          <div className='flex gap-4 mb-8'>
+            <button className='bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600'>
+              Add to Cart
+            </button>
+            <button className='bg-gray-200 text-gray-900 px-6 py-2 rounded-full hover:bg-gray-300'>
+              Add to Wishlist
+            </button>
           </div>
 
-          <div className='mt-2'>
-            <span
-              className={`text-sm ${
-                product?.stockQuantity > 0 ? 'text-green-500' : 'text-red-500'
-              }`}
-            >
-              {product?.stockQuantity > 0 ? 'Available' : 'Out of stock'}
-            </span>
+          {/* Description */}
+          <div className='mb-10'>
+            <h2 className='text-2xl font-semibold mb-6 text-gray-900'>
+              {product.detailedDescription || 'Product Details'}
+            </h2>
+            <p className='text-gray-700 leading-relaxed'>
+              {product.description}
+            </p>
           </div>
-
-          <div className='mt-6'>
-            <Button
-              className='bg-main text-white px-6 py-2 rounded-lg shadow-md hover:bg-hoverCardBg'
-              // onClick={() => addPacketToCart(product._id, 1)}
-              onClick={() => navigate('/contact')}
-            >
-              Inquire Now
-            </Button>
+          <div className='mb-10'>
+            <h3 className='text-2xl font-semibold mb-6 text-gray-900'>
+              Product Details
+            </h3>
+            <table className='min-w-full bg-white'>
+              <tbody>
+                <tr>
+                  <td className='border px-4 py-2 font-semibold'>Box Size</td>
+                  <td className='border px-4 py-2'>12 Packets</td>
+                </tr>
+                <tr>
+                  <td className='border px-4 py-2 font-semibold'>
+                    Packeging Type
+                  </td>
+                  <td className='border px-4 py-2'>Jar</td>
+                </tr>
+                <tr>
+                  <td className='border px-4 py-2 font-semibold'>Self Life</td>
+                  <td className='border px-4 py-2'>6 Months</td>
+                </tr>
+                <tr>
+                  <td className='border px-4 py-2 font-semibold'>
+                    Storage Method
+                  </td>
+                  <td className='border px-4 py-2'>Refridgerator</td>
+                </tr>
+                <tr>
+                  <td className='border px-4 py-2 font-semibold'>Temprature</td>
+                  <td className='border px-4 py-2'>+4°C or Below</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-
-      {/* Details Table */}
-      <div className='container mt-10 max-w-7xl mx-auto px-4'>
-        <h3 className='text-xl font-semibold text-gray-800 mb-6'>
-          Product Details
-        </h3>
-        <div className='overflow-auto'>
-          <table className='table-auto w-full text-left text-gray-700'>
-            <tbody>
-              {[
-                { label: 'Packaging Type', value: product?.packagingType },
-                { label: 'Fries Type', value: product?.friesType },
-                { label: 'Feature', value: product?.feature },
-                { label: 'Self Life', value: product?.selfLife },
-                { label: 'Storage Method', value: product?.storageMethod },
-                { label: 'Temperature', value: product?.temprature },
-                {
-                  label: 'Usage Application',
-                  value: product?.usageApplication,
-                },
-                {
-                  label: 'Refrigeration Required',
-                  value: product?.refrigerationRequired ? 'Yes' : 'No',
-                },
-                { label: 'Country of Origin', value: product?.countryOfOrigin },
-                { label: 'Application', value: product?.application },
-                {
-                  label: 'Frozen Temperature',
-                  value: product?.frozenTemprature,
-                },
-                { label: 'Ingredients', value: product?.ingrediants },
-                { label: 'Form', value: product?.form },
-              ].map(({ label, value }, index) => (
-                <tr key={index} className='border-b'>
-                  <td className='py-2 px-4 font-medium'>{label}</td>
-                  <td className='py-2 px-4'>{value || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className='mt-16'>
+        <h2 className='text-3xl font-bold mb-8 text-gray-900'>
+          Suggested Products
+        </h2>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+          {Array(4)
+            .fill(product) // Using the same product as placeholder for now
+            .map((suggestedProduct, index) => (
+              <div
+                key={index}
+                className='border p-4 rounded-lg shadow-sm hover:shadow-lg transition duration-200'
+              >
+                <img
+                  src={suggestedProduct.detailedImages?.[0] || mainImage}
+                  alt={suggestedProduct.name}
+                  className='w-full h-48 object-cover mb-4 rounded-lg'
+                />
+                <h3 className='text-lg font-semibold text-gray-900'>
+                  {suggestedProduct.name}
+                </h3>
+                <p className='text-gray-600 text-sm'>
+                  {suggestedProduct.category}
+                </p>
+                <p className='text-lg font-semibold text-gray-900 mt-2'>{`₹ ${suggestedProduct.packetPrice} / KG`}</p>
+                <button className='mt-4 w-full bg-blue-500 text-white py-2 rounded-full hover:bg-blue-600'>
+                  View Details
+                </button>
+              </div>
+            ))}
         </div>
       </div>
     </div>
   );
 };
 
-export default MenuDetail;
+export default DetailedImages;

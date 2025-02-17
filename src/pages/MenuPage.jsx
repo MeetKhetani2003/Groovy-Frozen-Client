@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable simple-import-sort/imports */
 import {
   Pagination,
   PaginationContent,
